@@ -1,10 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+// import axios from "axios";
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, thunkAPI) => {
   try {
-    const resp = await axios('https://randomuser.me/api/?results=5')
-    return resp.data;
+    const resp = (await fetch('https://randomuser.me/api/?results=5'));
+    const userData = resp.json();
+    
+    console.log(userData);
+    return userData;
+    // return resp.results
   } catch (error) {
     return thunkAPI.rejectWithValue('Failed to fetch users')
   }
@@ -28,7 +32,7 @@ const usersSlice = createSlice({
 
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.isLoading = false
-        state.users = action.payload
+        state.users = action.payload.results
       })
 
       .addCase(fetchUsers.rejected, (state, action) => {
